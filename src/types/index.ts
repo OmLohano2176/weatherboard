@@ -14,3 +14,5 @@ export type GeoDBErrorCode =
   | 'RATE_LIMITED'
   | 'NETWORK_ERROR'
   | 'HTTP_ERROR';
+
+export * from './weather';

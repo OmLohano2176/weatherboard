@@ -1,10 +1,22 @@
 import { useState } from 'react';
 import { City } from './types';
 import { CitySearch } from './components/CitySearch';
+import { CurrentWeather } from './components/CurrentWeather';
+import { Forecast } from './components/Forecast';
+import { WeatherSkeleton } from './components/WeatherSkeleton';
+import { WeatherErrorView } from './components/WeatherErrorView';
+import { useWeather } from './hooks/useWeather';
+import './components/Weather.css';
 import './App.css';
 
 export function App() {
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
+  const {
+    data: weatherData,
+    status: weatherStatus,
+    error: weatherError,
+    retry: retryWeather,
+  } = useWeather(selectedCity);
 
   return (
     <div className="app-shell">
@@ -21,23 +33,37 @@ export function App() {
       </header>
 
       <main className="app-main">
-        <div className="search-section">
-          <CitySearch onSelect={setSelectedCity} />
+        <div className="weather-app-content">
+          <div className="search-section">
+            <CitySearch onSelect={setSelectedCity} />
+          </div>
 
-          {selectedCity && (
-            <div className="selected-city-card" aria-live="polite">
-              <span className="selected-city-badge">Selected Location</span>
-              <h2 className="selected-city-name">
-                {selectedCity.name}, {selectedCity.country}
-              </h2>
-              {selectedCity.region && (
-                <p className="selected-city-region">{selectedCity.region}</p>
-              )}
-              <p className="selected-city-coords">
-                Lat: {selectedCity.latitude.toFixed(4)}° &bull; Lon: {selectedCity.longitude.toFixed(4)}°
-              </p>
-            </div>
-          )}
+          <div className="weather-section" aria-live="polite">
+            {!selectedCity && (
+              <section className="initial-hint-card">
+                <h2>Welcome to WeatherBoard</h2>
+                <p>Search for a city above to see live weather and a 5-day forecast.</p>
+              </section>
+            )}
+
+            {selectedCity && weatherStatus === 'loading' && <WeatherSkeleton />}
+
+            {selectedCity && weatherStatus === 'error' && (
+              <WeatherErrorView error={weatherError} onRetry={retryWeather} />
+            )}
+
+            {selectedCity && weatherStatus === 'success' && weatherData && (
+              <div className="weather-display-container">
+                <CurrentWeather
+                  current={weatherData.current}
+                  source={weatherData.source}
+                  cityName={selectedCity.name}
+                  country={selectedCity.country}
+                />
+                <Forecast daily={weatherData.daily} />
+              </div>
+            )}
+          </div>
         </div>
       </main>
     </div>
