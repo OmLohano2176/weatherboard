@@ -100,4 +100,32 @@ Show me which files you created or changed.
 _(Fill in after testing.)_
 
 ---
+## Prompt 4: Favourite cities
+**Model:** Gemini 3.8 Flash (Medium)
 
+```
+Add favourite cities. Do not touch the weather services or the search logic, and do not build offline or notification features yet.
+
+Requirements:
+1. src/utils/storage.ts: a safe storage wrapper around localStorage. Wrap every read and write in try/catch. Export isStorageAvailable() (test by writing and removing a key). If storage is unavailable (private mode, blocked, quota exceeded), fall back to an in-memory store for the session instead of crashing.
+2. src/hooks/useFavorites.ts:
+   - Stores up to 5 City objects under the key "weatherboard:favorites".
+   - On load, JSON.parse inside try/catch and validate the shape of each item (id, name, country, latitude and longitude as numbers). Drop invalid entries and never crash on corrupted data.
+   - Returns { favorites, isFavorite(city), addFavorite(city), removeFavorite(id), storageAvailable, limitReached }.
+   - addFavorite returns a result object, not just void: { ok: true } or { ok: false, reason: 'limit' | 'duplicate' }. Prevent duplicates by city id.
+   - Sync across browser tabs using the "storage" event.
+3. src/components/FavoriteButton.tsx: a star toggle button on the weather card for the selected city. aria-pressed, an accessible label ("Add Karachi to favourites" / "Remove Karachi from favourites"), minimum 44x44px. When the limit is reached, show the inline message "You can save up to 5 favourite cities. Remove one to add another."
+4. src/components/FavoritesPanel.tsx: a quick-access panel listing saved cities. Clicking a city selects it and loads its weather. Each item has a remove button (minimum 44x44px, aria-label "Remove <city> from favourites"). Empty state: a helpful message such as "No favourites yet. Search for a city and tap the star to save it here."
+5. Confirmation before removal: use a native <dialog> element (or an accessible modal with focus trap) with the text "Remove <city> from favourites?", plus Cancel and Remove buttons. Escape cancels. Focus returns to the triggering element afterwards. Do not use window.confirm.
+6. Graceful degradation: if storageAvailable is false, show a non-blocking notice such as "Favourites can't be saved on this device and will be cleared when you close the tab." Everything else keeps working.
+7. Layout: on desktop and tablet the favourites panel sits beside or below the search; on mobile (375px) it is a horizontally scrollable chip row inside its own overflow-x container, with no page-level horizontal scroll.
+8. Selecting a city from the panel must update the same selected-city state used by the search, so the weather, forecast and star all update.
+9. Use the existing CSS variables. Do not add dependencies.
+
+Show me which files you created or changed.
+```
+
+### Result
+_(Fill in after testing.)_
+
+---

@@ -7,6 +7,7 @@ export interface CurrentWeatherProps {
   source: 'openweathermap' | 'open-meteo';
   cityName: string;
   country: string;
+  favoriteAction?: React.ReactNode;
 }
 
 export const CurrentWeather: React.FC<CurrentWeatherProps> = ({
@@ -14,6 +15,7 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({
   source,
   cityName,
   country,
+  favoriteAction,
 }) => {
   const sourceText =
     source === 'openweathermap'
@@ -29,6 +31,7 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({
           </h2>
           <p className="current-city-subtitle">Current Weather</p>
         </div>
+        {favoriteAction}
       </div>
 
       <div className="current-weather-main">
