@@ -11,6 +11,8 @@
   --color-primary: #38bdf8;
   --color-primary-hover: #0ea5e9;
   --color-accent: #f59e0b;
+  --color-error: #ef4444;
+  --color-error-bg: rgba(239, 68, 68, 0.12);
 
   /* Typography */
   --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
