@@ -1,0 +1,100 @@
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--header-height);
+  background-color: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+}
+
+.header-inner {
+  width: 100%;
+  max-width: var(--max-width-container);
+  margin: 0 auto;
+  padding: 0 var(--spacing-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.brand-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-primary);
+  color: var(--color-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.brand-name {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.025em;
+  color: var(--color-text-primary);
+}
+
+.brand-tag {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg-surface-hover);
+  color: var(--color-primary);
+  border: 1px solid var(--color-border-light);
+}
+
+.app-main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--max-width-container);
+  margin: 0 auto;
+  padding: var(--spacing-6) var(--spacing-4);
+}
+
+.placeholder-card {
+  border: 1px dashed var(--color-border-light);
+  border-radius: var(--radius-lg);
+  background-color: rgba(30, 41, 59, 0.4);
+  padding: var(--spacing-12) var(--spacing-6);
+  text-align: center;
+}
+
+.placeholder-card h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-2);
+}
+
+.placeholder-card p {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+@media (min-width: 768px) {
+  .header-inner {
+    padding: 0 var(--spacing-8);
+  }
+
+  .app-main {
+    padding: var(--spacing-8);
+  }
+}

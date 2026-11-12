@@ -2,3 +2,19 @@ node_modules
 dist
 .env
 .env.local
+
+# Vite & PWA build output
+dist-ssr
+*.local
+.dev-dist
+
+# Editor & OS files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+Thumbs.db
