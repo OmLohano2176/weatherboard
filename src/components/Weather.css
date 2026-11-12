@@ -29,6 +29,13 @@
   gap: var(--spacing-2);
 }
 
+.current-city-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+}
+
 .current-city-title {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
@@ -36,10 +43,34 @@
   line-height: var(--line-height-tight);
 }
 
+.weather-cached-badge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  background-color: rgba(245, 158, 11, 0.15);
+  color: var(--color-accent);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--radius-full);
+  padding: 2px var(--spacing-2);
+  display: inline-block;
+  line-height: 1.2;
+}
+
+.current-city-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-1);
+}
+
 .current-city-subtitle {
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
-  margin-top: var(--spacing-1);
+}
+
+.weather-last-updated {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
 }
 
 .current-weather-main {

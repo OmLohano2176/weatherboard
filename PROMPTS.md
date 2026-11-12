@@ -129,3 +129,34 @@ Show me which files you created or changed.
 _(Fill in after testing.)_
 
 ---
+## Prompt 5: PWA caching and offline mode
+**Model:** Gemini 3.8 Flash (Medium)
+
+```
+Make the app work offline for the last viewed city. Do not build push notifications yet.
+
+Requirements:
+1. src/sw.ts (custom service worker, injectManifest strategy):
+   - Precache the app shell using the injected manifest (cleanupOutdatedCaches too).
+   - Add a NavigationRoute that serves the precached index.html for navigation requests, so the app loads offline.
+   - Add a runtime route for the weather APIs (api.openweathermap.org and api.open-meteo.com) using NetworkFirst with a 4-second network timeout, a dedicated cache named "weather-api" and ExpirationPlugin (maxEntries 4, maxAgeSeconds 24 hours). Cache only responses with status 200.
+   - Do NOT cache GeoDB / RapidAPI requests. City search needs the network.
+   - Handle skipWaiting / clients.claim so updates activate cleanly.
+2. Last viewed city persistence: whenever weather loads successfully, save { city, weather (the full WeatherData), savedAt } under the key "weatherboard:last-view" using the safe storage wrapper from src/utils/storage.ts. Also save the selected city.
+3. On app start, if a last-view entry exists and the selected city is empty, restore it and show it immediately. Fetch fresh data in the background if online. If the fetch fails because the user is offline, keep showing the cached data. Never replace cached data with an error screen when offline.
+4. src/hooks/useOnlineStatus.ts: tracks navigator.onLine plus the window "online" and "offline" events.
+5. src/components/OfflineBanner.tsx: a banner at the top of the page shown only when offline. It has role="status" and aria-live="polite", and the text "You're offline. Showing the last saved weather for <city>, updated <relative time>." If there is no cached city, the text is "You're offline. Connect to the internet to search for a city." The banner must not shift or overlap the layout badly at 375px.
+6. When offline: disable or visibly mark the search field with the helper text "Search needs an internet connection." Favourites can still be clicked. Clicking a favourite that has no cached weather shows a specific message ("No saved weather for <city> yet. Reconnect to load it.") instead of a generic error. Clicking the one cached city shows its cached data.
+7. Show a "Last updated" timestamp on the weather card, and a "Cached" label when the data on screen came from the cache.
+8. Manifest: verify name, short_name, 192 and 512 icons, theme_color, background_color, display "standalone", start_url "/" and scope "/". Add a "maskable" purpose entry for the 512 icon. Add <meta name="theme-color"> and apple-touch-icon in index.html.
+9. Keep the registration code in src/registerSW.ts. Log nothing noisy to the console.
+10. Do not add dependencies other than workbox packages already used (workbox-precaching, workbox-routing, workbox-strategies, workbox-expiration, workbox-cacheable-response). Add any that are missing to package.json.
+11. At the end, tell me exactly how to test offline mode (build + preview commands), because service workers do not behave reliably in the Vite dev server.
+
+Show me which files you created or changed.
+```
+
+### Result
+_(Fill in after testing.)_
+
+---

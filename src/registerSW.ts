@@ -5,17 +5,14 @@ export function setupServiceWorker(): void {
     registerSW({
       immediate: true,
       onNeedRefresh() {
-        console.log('[WeatherBoard SW] New content available.');
+        // Automatically updates when new service worker is ready
       },
       onOfflineReady() {
-        console.log('[WeatherBoard SW] App ready for offline use.');
+        // Ready for offline use
       },
-      onRegisteredSW(swUrl, registration) {
-        console.log('[WeatherBoard SW] Registered at:', swUrl, registration);
+      onRegisterError() {
+        // Silently handle error to prevent noisy console output
       },
-      onRegisterError(error) {
-        console.error('[WeatherBoard SW] Registration failed:', error);
-      }
     });
   }
 }

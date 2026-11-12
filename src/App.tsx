@@ -7,14 +7,23 @@ import { WeatherSkeleton } from './components/WeatherSkeleton';
 import { WeatherErrorView } from './components/WeatherErrorView';
 import { FavoritesPanel } from './components/FavoritesPanel';
 import { FavoriteButton } from './components/FavoriteButton';
+import { OfflineBanner } from './components/OfflineBanner';
 import { useWeather } from './hooks/useWeather';
 import { useFavorites } from './hooks/useFavorites';
+import { useOnlineStatus } from './hooks/useOnlineStatus';
+import { getSavedSelectedCity, getLastView } from './utils/lastView';
 import './components/Weather.css';
 import './components/Favorites.css';
 import './App.css';
 
 export function App() {
-  const [selectedCity, setSelectedCity] = useState<City | null>(null);
+  const isOnline = useOnlineStatus();
+  const lastView = getLastView();
+
+  // Restore last-viewed city on initial boot if available
+  const [selectedCity, setSelectedCity] = useState<City | null>(() => {
+    return getSavedSelectedCity();
+  });
 
   const {
     favorites,
@@ -29,11 +38,19 @@ export function App() {
     data: weatherData,
     status: weatherStatus,
     error: weatherError,
+    isCached,
+    lastUpdated,
     retry: retryWeather,
-  } = useWeather(selectedCity);
+  } = useWeather(selectedCity, isOnline);
 
   return (
     <div className="app-shell">
+      <OfflineBanner
+        isOnline={isOnline}
+        cachedCity={lastView?.city}
+        savedAt={lastView?.savedAt}
+      />
+
       <header className="app-header">
         <div className="header-inner">
           <div className="header-brand">
@@ -49,7 +66,7 @@ export function App() {
       <main className="app-main">
         <div className="weather-app-content">
           <div className="search-section">
-            <CitySearch onSelect={setSelectedCity} />
+            <CitySearch onSelect={setSelectedCity} isOnline={isOnline} />
             <FavoritesPanel
               favorites={favorites}
               selectedCity={selectedCity}
@@ -63,7 +80,10 @@ export function App() {
             {!selectedCity && (
               <section className="initial-hint-card">
                 <h2>Welcome to WeatherBoard</h2>
-                <p>Search for a city above or tap a favourite to see live weather and a 5-day forecast.</p>
+                <p>
+                  Search for a city above or tap a favourite to see live weather and a 5-day
+                  forecast.
+                </p>
               </section>
             )}
 
@@ -80,6 +100,8 @@ export function App() {
                   source={weatherData.source}
                   cityName={selectedCity.name}
                   country={selectedCity.country}
+                  isCached={isCached}
+                  lastUpdated={lastUpdated}
                   favoriteAction={
                     <FavoriteButton
                       city={selectedCity}

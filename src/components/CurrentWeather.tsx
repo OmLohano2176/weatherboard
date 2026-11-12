@@ -8,6 +8,19 @@ export interface CurrentWeatherProps {
   cityName: string;
   country: string;
   favoriteAction?: React.ReactNode;
+  isCached?: boolean;
+  lastUpdated?: number | null;
+}
+
+function formatLastUpdated(timestamp: number): string {
+  try {
+    return new Date(timestamp).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  } catch {
+    return new Date(timestamp).toLocaleTimeString();
+  }
 }
 
 export const CurrentWeather: React.FC<CurrentWeatherProps> = ({
@@ -16,6 +29,8 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({
   cityName,
   country,
   favoriteAction,
+  isCached = false,
+  lastUpdated = null,
 }) => {
   const sourceText =
     source === 'openweathermap'
@@ -26,10 +41,24 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({
     <section className="current-weather-card" aria-label="Current Weather">
       <div className="current-weather-header">
         <div>
-          <h2 className="current-city-title">
-            {cityName}, {country}
-          </h2>
-          <p className="current-city-subtitle">Current Weather</p>
+          <div className="current-city-title-row">
+            <h2 className="current-city-title">
+              {cityName}, {country}
+            </h2>
+            {isCached && (
+              <span className="weather-cached-badge" aria-label="Cached data">
+                Cached
+              </span>
+            )}
+          </div>
+          <div className="current-city-meta">
+            <span className="current-city-subtitle">Current Weather</span>
+            {lastUpdated && (
+              <span className="weather-last-updated">
+                &bull; Last updated {formatLastUpdated(lastUpdated)}
+              </span>
+            )}
+          </div>
         </div>
         {favoriteAction}
       </div>

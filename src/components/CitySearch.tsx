@@ -5,9 +5,10 @@ import './CitySearch.css';
 
 export interface CitySearchProps {
   onSelect: (city: City) => void;
+  isOnline?: boolean;
 }
 
-export const CitySearch: React.FC<CitySearchProps> = ({ onSelect }) => {
+export const CitySearch: React.FC<CitySearchProps> = ({ onSelect, isOnline = true }) => {
   const {
     query,
     setQuery,
@@ -28,7 +29,8 @@ export const CitySearch: React.FC<CitySearchProps> = ({ onSelect }) => {
   const listboxRef = useRef<HTMLDivElement>(null);
 
   const trimmedQuery = query.trim();
-  const shouldShowDropdown = isOpen && trimmedQuery.length >= 2 && status !== 'idle';
+  const shouldShowDropdown =
+    isOnline && isOpen && trimmedQuery.length >= 2 && status !== 'idle';
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -299,24 +301,35 @@ export const CitySearch: React.FC<CitySearchProps> = ({ onSelect }) => {
             aria-controls="city-search-listbox"
             aria-activedescendant={activeOptionId}
             aria-invalid={Boolean(validationError)}
-            aria-describedby={validationError ? 'city-search-error' : undefined}
+            aria-describedby={
+              !isOnline
+                ? 'city-search-offline-helper'
+                : validationError
+                ? 'city-search-error'
+                : undefined
+            }
             value={query}
+            disabled={!isOnline}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
             onFocus={() => {
-              if (trimmedQuery.length >= 2) {
+              if (isOnline && trimmedQuery.length >= 2) {
                 setIsOpen(true);
               }
             }}
-            placeholder="Search for a city..."
-            className={`city-search-input ${validationError ? 'has-error' : ''}`}
+            placeholder={
+              isOnline ? 'Search for a city...' : 'Search needs an internet connection.'
+            }
+            className={`city-search-input ${validationError ? 'has-error' : ''} ${
+              !isOnline ? 'is-offline' : ''
+            }`}
             autoComplete="off"
             autoCapitalize="words"
             spellCheck="false"
           />
 
-          {query && (
+          {isOnline && query && (
             <button
               type="button"
               className="city-search-clear-btn"
@@ -341,7 +354,13 @@ export const CitySearch: React.FC<CitySearchProps> = ({ onSelect }) => {
           )}
         </div>
 
-        {validationError && (
+        {!isOnline && (
+          <p id="city-search-offline-helper" className="city-search-offline-helper" role="note">
+            Search needs an internet connection.
+          </p>
+        )}
+
+        {isOnline && validationError && (
           <div id="city-search-error" role="alert" className="city-search-validation-error">
             {validationError}
           </div>
