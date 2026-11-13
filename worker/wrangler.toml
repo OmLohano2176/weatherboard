@@ -1,0 +1,23 @@
+name = "weatherboard-push"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+
+# KV namespace binding for storing push subscriptions and rate-limit keys
+# Run `wrangler kv:namespace create SUBS` and replace <YOUR_KV_NAMESPACE_ID> with the generated ID
+[[kv_namespaces]]
+binding = "SUBS"
+id = "8c215cc01b9348f1af3f7a24474a4711"
+preview_id = "d0ec2235acc84c83a775569a63a7e1f3"
+
+# Cron trigger: execute every 5 minutes to check for due reminders
+[triggers]
+crons = ["*/5 * * * *"]
+
+# Public environment variables
+[vars]
+VAPID_PUBLIC_KEY = "BPjhEdMfo0zaIqqQpP6fgA2es1WkLp0_oPIBgnx8sStCAU5F70Os6M3v7mazJCCZbIAHg-B0EXHXWnSY0yenwXM"
+VAPID_SUBJECT = "mailto:rockingboy263@gmail.com"
+ALLOWED_ORIGINS = "http://localhost:4173,http://localhost:5173,https://weatherboard.app"
+
+# Note: VAPID_PRIVATE_KEY is a sensitive secret and must NEVER be stored here.
+# Configure it via: wrangler secret put VAPID_PRIVATE_KEY
