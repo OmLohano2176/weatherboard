@@ -241,3 +241,21 @@ Show me which files you created or changed.
 _(Fill in after testing.)_
 
 ---
+
+## Prompt 8: Fix reminder not re-arming after changing the time
+**Model:** Gemini 3.8 Flash (Medium)
+
+```
+Bug in /worker/src/index.ts: when a user re-subscribes the same endpoint with a different time or timeZone, the existing lastSentDate is kept. If a reminder was already sent today, the new time never fires until tomorrow.
+
+Fix:
+- In POST /api/subscribe, if a record already exists and its time or timeZone differs from the new values, reset lastSentDate to null. If both are unchanged, keep lastSentDate as it is.
+- Keep the scheduled handler's due rule unchanged (lastSentDate !== local today AND 0 <= nowMinutes - chosenMinutes < 10).
+- Add a one-line log in the scheduled handler: the number of subscriptions checked, the number due, and the number sent (counts only, never log endpoints or keys).
+- Do not change anything else. Show me the diff.
+```
+
+### Result
+_(Fill in after testing.)_
+
+---

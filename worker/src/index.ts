@@ -264,11 +264,18 @@ async function handleFetch(req: Request, env: Env): Promise<Response> {
       }
     }
 
+    let lastSentDate: string | null = null;
+    if (existingRecord) {
+      const isUnchanged =
+        existingRecord.time === time && existingRecord.timeZone === timeZone;
+      lastSentDate = isUnchanged ? existingRecord.lastSentDate : null;
+    }
+
     const record: SubscriptionRecord = {
       subscription,
       time,
       timeZone,
-      lastSentDate: existingRecord ? existingRecord.lastSentDate : null,
+      lastSentDate,
       createdAt: existingRecord ? existingRecord.createdAt : Date.now(),
     };
 
@@ -410,6 +417,7 @@ async function handleScheduled(_event: ScheduledEvent, env: Env): Promise<void> 
   }
 
   const dueItems: DueItem[] = [];
+  let checkedCount = 0;
 
   // Evaluate due subscriptions
   for (const key of subscriptionKeys) {
@@ -417,6 +425,7 @@ async function handleScheduled(_event: ScheduledEvent, env: Env): Promise<void> 
       break;
     }
 
+    checkedCount++;
     const raw = await env.SUBS.get(key);
     if (!raw) continue;
 
@@ -450,6 +459,7 @@ async function handleScheduled(_event: ScheduledEvent, env: Env): Promise<void> 
 
   // Concurrency pool processing (max 6 concurrent sends, Promise.allSettled)
   const executing = new Set<Promise<void>>();
+  let sentCount = 0;
 
   for (const item of dueItems) {
     const task = (async () => {
@@ -464,6 +474,7 @@ async function handleScheduled(_event: ScheduledEvent, env: Env): Promise<void> 
 
         // 2xx response: mark as sent today (single KV write per subscription per day)
         if (response.ok) {
+          sentCount++;
           item.record.lastSentDate = item.localDate;
           await env.SUBS.put(item.key, JSON.stringify(item.record));
           return;
@@ -486,6 +497,10 @@ async function handleScheduled(_event: ScheduledEvent, env: Env): Promise<void> 
   }
 
   await Promise.allSettled(Array.from(executing));
+
+  console.log(
+    `Scheduled run: ${checkedCount} checked, ${dueItems.length} due, ${sentCount} sent.`
+  );
 }
 
 export default {
