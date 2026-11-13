@@ -13,6 +13,7 @@ import { WeatherIcon } from './components/WeatherIcon';
 import { useWeather } from './hooks/useWeather';
 import { useFavorites } from './hooks/useFavorites';
 import { useOnlineStatus } from './hooks/useOnlineStatus';
+import { useInstallPrompt } from './hooks/useInstallPrompt';
 import { getSavedSelectedCity, getLastView } from './utils/lastView';
 import { saveSelectedCityToCache } from './utils/prefs';
 import './components/Weather.css';
@@ -21,6 +22,7 @@ import './App.css';
 
 export function App() {
   const isOnline = useOnlineStatus();
+  const { canInstall, install } = useInstallPrompt();
   const lastView = getLastView();
 
   // Restore last-viewed city on initial boot if available
@@ -92,7 +94,31 @@ export function App() {
           </div>
 
           <div className="header-status-group">
-            <span className="brand-tag">PWA</span>
+            {canInstall && (
+              <button
+                type="button"
+                className="install-app-btn"
+                onClick={install}
+                aria-label="Install app"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                <span>Install app</span>
+              </button>
+            )}
             <div
               className={`status-pill ${isOnline ? 'is-online' : 'is-offline'}`}
               role="status"

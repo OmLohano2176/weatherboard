@@ -367,3 +367,24 @@ Show me the diff.
 _(Fill in after testing.)_
 
 ---
+## Prompt 13: Replace the "PWA" badge with an Install button
+**Model:** Gemini 3.8 Flash (Medium)
+
+```
+In the header (App.tsx and App.css), remove the static "PWA" badge and replace it with a real "Install app" button. Do not change any other logic, data fetching, caching or push code.
+
+Requirements:
+1. Create src/hooks/useInstallPrompt.ts. Listen for the window "beforeinstallprompt" event, call event.preventDefault(), and store the event in state. Add a minimal TypeScript type for BeforeInstallPromptEvent (prompt(): Promise<void>; userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>). Expose { canInstall, install() }.
+2. install() calls the stored event's prompt(), awaits userChoice, then clears the stored event. Handle errors silently.
+3. Listen for "appinstalled" and clear the stored event. Set canInstall to false whenever the app already runs standalone (window.matchMedia('(display-mode: standalone)').matches or navigator.standalone).
+4. Render the button only when canInstall is true. Label "Install app" with a small download icon (inline SVG), at least 44px tall, the same style as the other header controls, with a visible :focus-visible ring and an accessible name. Use the existing design tokens.
+5. When canInstall is false, render nothing in that spot (no placeholder text, no layout shift). Keep the Online/Offline status pill as it is.
+6. Clean up the listeners on unmount. Add no dependencies.
+
+Show me the diff.
+```
+
+### Result
+_(Fill in after testing.)_
+
+---
