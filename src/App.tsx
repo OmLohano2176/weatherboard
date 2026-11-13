@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { City } from './types';
 import { CitySearch } from './components/CitySearch';
 import { CurrentWeather } from './components/CurrentWeather';
@@ -8,10 +8,12 @@ import { WeatherErrorView } from './components/WeatherErrorView';
 import { FavoritesPanel } from './components/FavoritesPanel';
 import { FavoriteButton } from './components/FavoriteButton';
 import { OfflineBanner } from './components/OfflineBanner';
+import { ReminderSettings } from './components/ReminderSettings';
 import { useWeather } from './hooks/useWeather';
 import { useFavorites } from './hooks/useFavorites';
 import { useOnlineStatus } from './hooks/useOnlineStatus';
 import { getSavedSelectedCity, getLastView } from './utils/lastView';
+import { saveSelectedCityToCache } from './utils/prefs';
 import './components/Weather.css';
 import './components/Favorites.css';
 import './App.css';
@@ -24,6 +26,11 @@ export function App() {
   const [selectedCity, setSelectedCity] = useState<City | null>(() => {
     return getSavedSelectedCity();
   });
+
+  // Sync selected city with Cache API so Service Worker can read it on push notifications
+  useEffect(() => {
+    saveSelectedCityToCache(selectedCity);
+  }, [selectedCity]);
 
   const {
     favorites,
@@ -115,6 +122,9 @@ export function App() {
                 <Forecast daily={weatherData.daily} />
               </div>
             )}
+
+            {/* Daily Weather Reminder Settings */}
+            <ReminderSettings isOnline={isOnline} />
           </div>
         </div>
       </main>

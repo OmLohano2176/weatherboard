@@ -1,0 +1,267 @@
+.reminder-card {
+  width: 100%;
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-4);
+}
+
+.reminder-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+
+.reminder-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.reminder-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reminder-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.reminder-body {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+  margin: 0;
+}
+
+.reminder-offline-helper {
+  font-size: var(--font-size-xs);
+  color: var(--color-accent);
+  background-color: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-1) var(--spacing-2);
+  margin: 0;
+}
+
+.reminder-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  flex-wrap: wrap;
+}
+
+.reminder-btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: var(--spacing-2) var(--spacing-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+
+.reminder-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.reminder-btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-bg-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.reminder-btn-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.reminder-btn-secondary {
+  background-color: var(--color-bg-surface-hover);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+.reminder-btn-secondary:hover:not(:disabled) {
+  background-color: var(--color-border);
+}
+
+.reminder-btn-danger {
+  background-color: transparent;
+  color: var(--color-error);
+  border: 1px solid var(--color-border);
+}
+
+.reminder-btn-danger:hover:not(:disabled) {
+  background-color: var(--color-error-bg);
+  border-color: var(--color-error);
+}
+
+.reminder-error-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-2) var(--spacing-3);
+}
+
+.reminder-error-text {
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+  margin: 0;
+  line-height: var(--line-height-normal);
+}
+
+.reminder-notice-box {
+  background-color: rgba(30, 41, 59, 0.4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+/* Modal Dialog */
+.reminder-dialog {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  padding: var(--spacing-6);
+  max-width: 440px;
+  width: 90%;
+  margin: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+}
+
+.reminder-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(2px);
+}
+
+.reminder-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.reminder-dialog-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.reminder-dialog-intro {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+  margin: 0;
+}
+
+.reminder-dialog-points {
+  margin: 0;
+  padding-left: var(--spacing-4);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.reminder-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.reminder-time-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.reminder-time-input {
+  min-height: 44px;
+  padding: var(--spacing-2) var(--spacing-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-sizing: border-box;
+  outline: none;
+}
+
+.reminder-time-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+.reminder-time-input.has-error {
+  border-color: var(--color-error);
+}
+
+.reminder-time-input.has-error:focus {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 2px var(--color-error-bg);
+}
+
+.reminder-time-error {
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+  margin: 0;
+}
+
+.reminder-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-2);
+}
+
+@media (max-width: 480px) {
+  .reminder-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .reminder-btn {
+    width: 100%;
+  }
+
+  .reminder-dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .reminder-dialog-actions .reminder-btn {
+    width: 100%;
+  }
+}

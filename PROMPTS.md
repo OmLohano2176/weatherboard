@@ -206,3 +206,38 @@ When done, list every file you created and give me the exact deploy commands.
 _(Fill in after deploying and testing.)_
 
 ---
+
+## Prompt 7: Daily reminders in the app
+**Model:** Gemini 3.8 Flash (Medium)
+
+```
+Add daily weather reminders to the React app using the Web Push API. A Cloudflare Worker (in /worker) stores subscriptions and sends payload-less pushes. Do not change weather, search, favourites or caching logic except where stated.
+
+Env: VITE_PUSH_API_URL (base URL of the Worker) and VITE_VAPID_PUBLIC_KEY. Add both to .env.example.
+
+1. src/utils/push.ts: isPushSupported() (serviceWorker in navigator, PushManager and Notification in window), urlBase64ToUint8Array, subscribeToPush(time, timeZone), updateReminderTime, unsubscribeFromPush(), sendTestPush(). All network calls go to VITE_PUSH_API_URL with typed errors: offline, Worker unreachable, a 400 validation message from the server, and 429.
+2. Persist reminder settings { enabled, time } under "weatherboard:reminder" via the safe storage wrapper.
+3. src/hooks/useReminders.ts: returns { support: 'supported' | 'unsupported' | 'ios-needs-install', permission, enabled, time, status, error, enable(time), disable(), changeTime(time), sendTest() }. Read Notification.permission on mount and react to changes (navigator.permissions.query when available).
+4. src/components/ReminderSettings.tsx: a card in the UI with these states:
+   - Not enabled: "Daily weather reminder", a short benefit line, and an "Enable reminder" button. Clicking opens an explainer dialog BEFORE the browser prompt: why we ask for notifications, what we send (one notification a day at the chosen time, nothing else), that they can turn it off any time, plus the time picker and "Continue" / "Not now" buttons. Only "Continue" calls Notification.requestPermission().
+   - Time picker: <input type="time">, default 07:30, required, validated on blur and on submit with the inline error "Choose a time for your reminder." (aria-invalid, aria-describedby). Clear the error as the user types.
+   - Enabled: "Reminder set for 07:30 (your local time)", with "Change time", "Send test notification" and "Turn off" (unsubscribes in the browser and tells the Worker).
+   - Permission denied: "Notifications are blocked for this site. To get reminders, allow notifications in your browser's site settings, then come back." The rest of the app must keep working untouched.
+   - Unsupported: "This browser doesn't support push notifications." On iOS Safari outside an installed PWA: "On iPhone and iPad, add WeatherBoard to your Home Screen first, then enable reminders."
+   - Worker unreachable or any other error: a specific message and a Retry button. If the Worker call fails after the browser subscription was created, roll the browser subscription back so state stays consistent.
+   - Buttons at least 44x44px; layout works at 375, 768 and 1280px with no horizontal scroll.
+5. src/sw.ts, add (keep all existing precache, navigation and runtime caching routes):
+   - A "push" listener using event.waitUntil: read the last selected city (see step 6), fetch today's weather for it directly from Open-Meteo (no key; reuse the WMO mapping from src/services/openmeteo.ts if it can be imported), and show a notification titled "<City> today" with a body like "26°C, overcast. High 33°, low 23°.", icon /icon-192.png, tag "daily-weather". If there is no saved city or the fetch fails, show the generic notification "Good morning! Tap to check today's weather." You MUST always call showNotification inside waitUntil.
+   - A "notificationclick" listener: close the notification, focus an existing app window or open "/".
+6. Whenever the selected city changes, write it where the service worker can read it (Cache API entry in a cache named "weatherboard-prefs" at "/__prefs/city", or IndexedDB; the service worker cannot read localStorage). Include name, country, latitude, longitude.
+7. When offline, disable Enable / Turn off / Test with the helper text "Reminders need an internet connection."
+8. Add a code comment explaining why pushes are payload-less (no encryption needed on the free Worker; the service worker builds the message).
+Do not add dependencies.
+
+Show me which files you created or changed.
+```
+
+### Result
+_(Fill in after testing.)_
+
+---
