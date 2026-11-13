@@ -28,6 +28,21 @@ export function App() {
     return getSavedSelectedCity();
   });
 
+  // Progressive enhancement: startViewTransition when changing selected city
+  const handleSelectCity = (city: City | null) => {
+    if (
+      typeof document !== 'undefined' &&
+      'startViewTransition' in document &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      document.startViewTransition(() => {
+        setSelectedCity(city);
+      });
+    } else {
+      setSelectedCity(city);
+    }
+  };
+
   // Sync selected city with Cache API so Service Worker can read it on push notifications
   useEffect(() => {
     saveSelectedCityToCache(selectedCity);
@@ -55,6 +70,12 @@ export function App() {
 
   return (
     <div className="app-shell" data-condition={activeCondition}>
+      {/* Ambient drifting condition-reactive background blobs (max 2 elements) */}
+      <div className="ambient-background" aria-hidden="true">
+        <div className="ambient-blob blob-1" />
+        <div className="ambient-blob blob-2" />
+      </div>
+
       <OfflineBanner
         isOnline={isOnline}
         cachedCity={lastView?.city}
@@ -90,7 +111,7 @@ export function App() {
           {/* Primary Column (Search + Weather / Forecast / Empty State) */}
           <div className="dashboard-primary">
             <div className="search-section">
-              <CitySearch onSelect={setSelectedCity} isOnline={isOnline} />
+              <CitySearch onSelect={handleSelectCity} isOnline={isOnline} />
             </div>
 
             <div className="weather-section" aria-live="polite">
@@ -122,7 +143,7 @@ export function App() {
               )}
 
               {selectedCity && weatherStatus === 'success' && weatherData && (
-                <div className="weather-display-container">
+                <div className="weather-display-container" key={selectedCity.id}>
                   <CurrentWeather
                     current={weatherData.current}
                     source={weatherData.source}
@@ -151,7 +172,7 @@ export function App() {
             <FavoritesPanel
               favorites={favorites}
               selectedCity={selectedCity}
-              onSelectCity={setSelectedCity}
+              onSelectCity={handleSelectCity}
               onRemoveFavorite={removeFavorite}
               storageAvailable={storageAvailable}
             />

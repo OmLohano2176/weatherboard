@@ -38,10 +38,6 @@ export const OfflineBanner: React.FC<OfflineBannerProps> = ({
     return () => clearInterval(interval);
   }, [isOnline]);
 
-  if (isOnline) {
-    return null;
-  }
-
   const message =
     cachedCity && savedAt
       ? `You're offline. Showing the last saved weather for ${cachedCity.name}, updated ${formatRelativeTime(
@@ -49,8 +45,21 @@ export const OfflineBanner: React.FC<OfflineBannerProps> = ({
         )}.`
       : "You're offline. Connect to the internet to search for a city.";
 
+  const [displayMessage, setDisplayMessage] = useState(message);
+
+  useEffect(() => {
+    if (!isOnline) {
+      setDisplayMessage(message);
+    }
+  }, [isOnline, message]);
+
   return (
-    <div className="offline-banner" role="status" aria-live="polite">
+    <div
+      className={`offline-banner ${!isOnline ? 'is-offline' : ''}`}
+      role="status"
+      aria-live="polite"
+      aria-hidden={isOnline}
+    >
       <div className="offline-banner-content">
         <svg
           className="offline-banner-icon"
@@ -72,7 +81,7 @@ export const OfflineBanner: React.FC<OfflineBannerProps> = ({
           <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
           <line x1="12" y1="20" x2="12.01" y2="20" />
         </svg>
-        <span className="offline-banner-text">{message}</span>
+        <span className="offline-banner-text">{displayMessage}</span>
       </div>
     </div>
   );

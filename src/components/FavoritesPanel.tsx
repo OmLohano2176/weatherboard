@@ -19,6 +19,7 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const triggeringBtnRef = useRef<HTMLButtonElement | null>(null);
   const [cityToRemove, setCityToRemove] = useState<City | null>(null);
+  const [removingId, setRemovingId] = useState<number | null>(null);
 
   const handleOpenRemoveDialog = (city: City, e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -35,13 +36,20 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
 
   const handleConfirmRemove = () => {
     if (cityToRemove) {
-      onRemoveFavorite(cityToRemove.id);
+      const id = cityToRemove.id;
+      dialogRef.current?.close();
+      setCityToRemove(null);
+
+      const prefersReducedMotion =
+        typeof window !== 'undefined' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (prefersReducedMotion) {
+        onRemoveFavorite(id);
+      } else {
+        setRemovingId(id);
+      }
     }
-    dialogRef.current?.close();
-    setCityToRemove(null);
-    setTimeout(() => {
-      triggeringBtnRef.current?.focus();
-    }, 0);
   };
 
   return (
@@ -68,11 +76,21 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
           <div className="favorites-chips-list" role="list">
             {favorites.map((city) => {
               const isActive = selectedCity?.id === city.id;
+              const isRemoving = removingId === city.id;
+
               return (
                 <div
                   key={city.id}
                   role="listitem"
-                  className={`favorite-chip ${isActive ? 'is-active' : ''}`}
+                  className={`favorite-chip ${isActive ? 'is-active' : ''} ${
+                    isRemoving ? 'is-removing' : ''
+                  }`}
+                  onAnimationEnd={(e) => {
+                    if (isRemoving && e.animationName === 'chip-slide-out') {
+                      onRemoveFavorite(city.id);
+                      setRemovingId(null);
+                    }
+                  }}
                 >
                   <button
                     type="button"

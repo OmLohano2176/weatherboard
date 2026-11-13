@@ -49,6 +49,7 @@ export const Forecast: React.FC<ForecastProps> = ({ daily }) => {
               <div
                 key={`${day.date}-${index}`}
                 className={`forecast-card ${isToday ? 'is-today' : ''}`}
+                style={{ '--i': index } as React.CSSProperties}
                 tabIndex={0}
                 role="listitem"
                 aria-label={`${weekday}: High ${day.maxC} degrees, Low ${day.minC} degrees, ${day.condition}`}

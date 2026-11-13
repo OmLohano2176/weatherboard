@@ -1,6 +1,7 @@
 import React from 'react';
 import { CurrentWeather as CurrentWeatherType } from '../types';
 import { WeatherIcon } from './WeatherIcon';
+import { useCountUp } from '../hooks/useCountUp';
 
 export interface CurrentWeatherProps {
   current: CurrentWeatherType;
@@ -32,6 +33,8 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({
   isCached = false,
   lastUpdated = null,
 }) => {
+  const displayTemp = useCountUp(current.tempC, 600, isCached);
+
   const sourceText =
     source === 'openweathermap'
       ? 'Data from OpenWeatherMap'
@@ -69,8 +72,11 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({
       {/* Hero Display: Large Tabular Temperature + 96-120px Weather Icon */}
       <div className="current-weather-hero">
         <div className="current-temp-block">
-          <div className="current-temp-numeric tabular-nums">
-            <span className="temp-value">{Math.round(current.tempC)}</span>
+          <div
+            className="current-temp-numeric tabular-nums"
+            aria-label={`${Math.round(current.tempC)} degrees Celsius`}
+          >
+            <span className="temp-value" aria-hidden="true">{displayTemp}</span>
             <span className="temp-unit" aria-hidden="true">°C</span>
           </div>
           <p className="current-condition-description">{current.description}</p>

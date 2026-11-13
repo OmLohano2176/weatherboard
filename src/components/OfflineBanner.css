@@ -1,5 +1,9 @@
 .offline-banner {
-  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
   background-color: rgba(120, 53, 15, 0.95);
   border-bottom: 1px solid rgba(245, 158, 11, 0.35);
   color: #fef3c7;
@@ -8,21 +12,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
-  z-index: 60;
   backdrop-filter: blur(8px);
-  animation: banner-slide-down 0.2s ease-out;
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out);
 }
 
-@keyframes banner-slide-down {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.offline-banner.is-offline {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .offline-banner-content {
@@ -52,5 +52,16 @@
 @media (min-width: 640px) {
   .offline-banner-text {
     font-size: var(--text-sm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .offline-banner {
+    transition: opacity var(--dur-fast) linear;
+    transform: none !important;
+  }
+
+  .offline-banner:not(.is-offline) {
+    display: none;
   }
 }

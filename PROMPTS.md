@@ -295,3 +295,57 @@ Show me which files you changed, and flag any place where you had to touch logic
 _(Fill in after testing.)_
 
 ---
+
+## Prompt 10: Motion polish
+**Model:** Gemini 3.8 Flash (Medium)
+
+```
+Add motion polish to WeatherBoard. CSS-first: no animation libraries (no Framer Motion, no Lottie). Do NOT change data fetching, hooks, caching, push or business logic.
+
+Global rules:
+- Animate only transform and opacity (and filter on at most one element). Never animate width, height, top, left or box-shadow on many elements.
+- Define tokens in index.css: --ease-out: cubic-bezier(0.22, 1, 0.36, 1); --dur-fast: 150ms; --dur-base: 250ms; --dur-slow: 500ms.
+- @media (prefers-reduced-motion: reduce): disable all looping and entrance animations (use no animation or a near-instant opacity fade), no count-up, no view transitions.
+
+1. Animated weather icons (WeatherIcon.tsx): keep the inline SVGs and add CSS animation classes per condition:
+   - clear: slow 24s rotation of the sun rays plus a gentle glow pulse.
+   - clouds: two cloud shapes drifting 6-8px horizontally with different durations (ease-in-out, alternate).
+   - rain / drizzle: 3-5 drops falling and fading in a staggered loop (animation-delay).
+   - thunderstorm: rain plus a brief lightning flash every ~6s (opacity keyframes).
+   - snow: flakes drifting down with a slight horizontal sway.
+   - mist: horizontal lines sliding slowly with an opacity pulse.
+   The hero icon animates continuously. Forecast-card icons animate only on hover/focus (or are static on touch devices) to keep cost low.
+2. Ambient background: a fixed, pointer-events: none layer behind the content showing the condition-reactive gradient. Add two blurred radial blobs that drift very slowly (40-60s) using transform: translate only, with will-change: transform. Cross-fade to the new condition colors over 800ms when the city changes. At most 2 animated elements.
+3. Entrance choreography: when weather data arrives, stagger in the hero card (fade plus 12px rise), then the detail tiles, then the 5 forecast cards (60ms stagger via a --i CSS variable), using animation-fill-mode: both. Re-run only when the selected city changes (key the wrapper by city id), never on a background refetch of the same city.
+4. Temperature count-up: a small hook useCountUp(value, 600ms) using requestAnimationFrame that animates the displayed number from the previous value to the new one with ease-out. No animation on the first render from cache, and none under reduced motion. Put the real final value in an aria-label on the wrapper so screen readers never hear intermediate numbers.
+5. Micro-interactions:
+   - Favourite star: scale pop (1 to 1.25 to 1) with a fill color transition when toggled.
+   - Favourite chips: fade and slide in when added; fade and slide out when removed (after the confirm dialog), removing the element on animationend.
+   - Buttons: 100ms press scale (0.97) on :active; hover lift only on (hover: hover) devices.
+   - Search dropdown: opacity plus translateY(-4px) to 0 over var(--dur-base).
+   - Skeleton: keep the shimmer but implement it with transform on a pseudo-element, not background-position.
+   - Offline banner: slide down with opacity when offline and slide up on reconnect, without causing layout shift (overlay it with transform or reserve its space).
+   - Confirm dialog and reminder explainer dialog: scale 0.96 to 1 plus fade, with a backdrop fade; degrade gracefully where @starting-style is unsupported.
+6. Progressive enhancement: wrap the city change in document.startViewTransition (feature-detected, skipped under reduced motion) with a short cross-fade.
+7. Budget: no new dependencies; total added JS under 2 KB gzipped (check the build output); no layout shift introduced (elements keep their final layout space from the first frame).
+
+Show me which files you changed, and list each animation with its trigger and duration in a short table so I can document it in the README.
+```
+
+### Result
+_(Fill in after testing.)_
+
+---
+## Prompt 11: Fix favourite removal under reduced motion
+**Model:** Gemini 3.8 Flash (Medium)
+
+```
+Bug: in FavoritesPanel.tsx, a confirmed removal adds the "is-removing" class and only removes the favourite on the animationend event. When prefers-reduced-motion disables animations (or the tab is hidden), animationend never fires, so the favourite is never removed.
+
+Fix: perform the removal reliably. If the user prefers reduced motion (matchMedia), call the removal immediately with no exit animation. Otherwise keep the exit animation, but add a fallback setTimeout of 400ms that performs the removal if animationend has not fired yet, and make sure the removal runs only once (guard with a ref or by clearing the timeout in the animationend handler). Clean up the timeout on unmount. Change nothing else, and show me the diff.
+```
+
+### Result
+_(Fill in after testing.)_
+
+---

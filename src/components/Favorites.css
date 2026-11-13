@@ -91,6 +91,28 @@
 }
 
 /* Favorite Chip (on surface-raised) */
+@keyframes chip-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes chip-slide-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.92);
+  }
+}
+
 .favorite-chip {
   display: inline-flex;
   align-items: center;
@@ -98,8 +120,14 @@
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
   transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+  animation: chip-slide-in var(--dur-base) var(--ease-out) both;
   flex-shrink: 0;
   box-sizing: border-box;
+}
+
+.favorite-chip.is-removing {
+  animation: chip-slide-out var(--dur-base) var(--ease-out) forwards;
+  pointer-events: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -199,6 +227,22 @@
   transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
+.favorite-toggle-btn svg {
+  transition: fill 200ms ease, stroke 200ms ease, transform 200ms var(--ease-out);
+}
+
+@keyframes star-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .favorite-toggle-btn:hover {
   border-color: rgba(255, 255, 255, 0.2);
   color: var(--text-primary);
@@ -208,6 +252,10 @@
   color: var(--accent-clear);
   border-color: rgba(245, 158, 11, 0.45);
   background-color: rgba(245, 158, 11, 0.12);
+}
+
+.favorite-toggle-btn[aria-pressed='true'] svg {
+  animation: star-pop 300ms var(--ease-out);
 }
 
 .favorite-toggle-btn:focus-visible {
@@ -315,4 +363,55 @@
 .dialog-btn:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* Dialog Animations */
+@keyframes dialog-scale-fade {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes backdrop-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.favorites-confirm-dialog[open] {
+  animation: dialog-scale-fade var(--dur-base) var(--ease-out) both;
+}
+
+.favorites-confirm-dialog[open]::backdrop {
+  animation: backdrop-fade var(--dur-base) var(--ease-out) both;
+}
+
+@supports (@starting-style: {}) {
+  @starting-style {
+    .favorites-confirm-dialog[open] {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    .favorites-confirm-dialog[open]::backdrop {
+      opacity: 0;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .favorite-chip,
+  .favorite-chip.is-removing,
+  .favorite-toggle-btn[aria-pressed='true'] svg,
+  .favorites-confirm-dialog[open],
+  .favorites-confirm-dialog[open]::backdrop {
+    animation: none !important;
+  }
 }

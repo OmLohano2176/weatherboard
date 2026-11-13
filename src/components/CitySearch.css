@@ -151,6 +151,17 @@
 }
 
 /* Dropdown listbox elevated on surface-raised with soft shadow */
+@keyframes dropdown-slide-fade {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .city-search-dropdown {
   position: absolute;
   top: calc(100% + var(--spacing-2));
@@ -164,6 +175,13 @@
   overflow-y: auto;
   z-index: 100;
   box-sizing: border-box;
+  animation: dropdown-slide-fade var(--dur-base) var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .city-search-dropdown {
+    animation: none !important;
+  }
 }
 
 /* High-contrast active item state with an accent indicator */

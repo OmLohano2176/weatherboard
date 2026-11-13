@@ -119,6 +119,12 @@
   --max-width-container: 1280px;
   --header-height: 4.25rem;
 
+  /* Motion tokens */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 500ms;
+
   /* Default reactive glow tokens (neutral) */
   --condition-accent: var(--color-primary);
   --condition-glow: rgba(56, 189, 248, 0.05);
@@ -216,6 +222,21 @@ body {
   outline-offset: 2px;
 }
 
+/* Button Micro-interactions (100ms press scale) */
+button:active:not(:disabled),
+.reminder-btn:active:not(:disabled),
+.weather-retry-btn:active:not(:disabled) {
+  transform: scale(0.97) !important;
+  transition: transform 100ms ease !important;
+}
+
+/* View Transitions Progressive Enhancement */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--dur-base);
+  animation-timing-function: var(--ease-out);
+}
+
 /* Prefers Reduced Motion Media Query */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -225,6 +246,12 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
   }
 }
 
