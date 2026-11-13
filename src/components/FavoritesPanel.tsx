@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { City } from '../types';
 
 export interface FavoritesPanelProps {
@@ -20,6 +20,29 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
   const triggeringBtnRef = useRef<HTMLButtonElement | null>(null);
   const [cityToRemove, setCityToRemove] = useState<City | null>(null);
   const [removingId, setRemovingId] = useState<number | null>(null);
+  const removeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const removedIdRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (removeTimeoutRef.current !== null) {
+        clearTimeout(removeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const performRemove = (id: number) => {
+    if (removeTimeoutRef.current !== null) {
+      clearTimeout(removeTimeoutRef.current);
+      removeTimeoutRef.current = null;
+    }
+    if (removedIdRef.current === id) {
+      return;
+    }
+    removedIdRef.current = id;
+    setRemovingId(null);
+    onRemoveFavorite(id);
+  };
 
   const handleOpenRemoveDialog = (city: City, e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -39,15 +62,22 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
       const id = cityToRemove.id;
       dialogRef.current?.close();
       setCityToRemove(null);
+      removedIdRef.current = null;
 
       const prefersReducedMotion =
         typeof window !== 'undefined' &&
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       if (prefersReducedMotion) {
-        onRemoveFavorite(id);
+        performRemove(id);
       } else {
         setRemovingId(id);
+        if (removeTimeoutRef.current !== null) {
+          clearTimeout(removeTimeoutRef.current);
+        }
+        removeTimeoutRef.current = setTimeout(() => {
+          performRemove(id);
+        }, 400);
       }
     }
   };
@@ -87,8 +117,7 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
                   }`}
                   onAnimationEnd={(e) => {
                     if (isRemoving && e.animationName === 'chip-slide-out') {
-                      onRemoveFavorite(city.id);
-                      setRemovingId(null);
+                      performRemove(city.id);
                     }
                   }}
                 >
