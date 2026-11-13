@@ -160,3 +160,49 @@ Show me which files you created or changed.
 _(Fill in after testing.)_
 
 ---
+
+## Prompt 6: Push notification backend (Cloudflare Worker)
+**Model:** Gemini 3.8 Flash (Medium)
+
+```
+Create a small Cloudflare Worker in a new top-level folder /worker (separate from the Vite app, with its own package.json, tsconfig.json and wrangler.toml). It sends daily Web Push reminders. Do not modify the React app in this prompt.
+
+Constraints: Cloudflare Workers FREE plan (10 ms CPU per invocation, 50 subrequests per invocation, 1,000 KV writes per day). TypeScript. No Node-only libraries: the `web-push` npm package does not run on Workers, so implement VAPID signing yourself with the WebCrypto API. Send payload-less pushes (empty body), so no payload encryption is needed.
+
+Config (wrangler.toml):
+- name "weatherboard-push", main src/index.ts, a current compatibility_date.
+- KV namespace binding SUBS.
+- [triggers] crons = ["*/5 * * * *"].
+- vars: VAPID_PUBLIC_KEY (base64url, uncompressed P-256 point), VAPID_SUBJECT ("mailto:" placeholder), ALLOWED_ORIGINS (comma-separated: http://localhost:4173, http://localhost:5173 and a placeholder for the production URL).
+- Secret: VAPID_PRIVATE_KEY (base64url, raw 32-byte d). Never put it in wrangler.toml. Document `wrangler secret put VAPID_PRIVATE_KEY`.
+- Create worker/.dev.vars.example and add .dev.vars to the root .gitignore.
+
+HTTP endpoints (JSON, CORS limited to ALLOWED_ORIGINS, OPTIONS preflight handled):
+1. POST /api/subscribe  body { subscription: PushSubscriptionJSON, time: "HH:MM", timeZone: IANA string }
+   - Validate everything. The endpoint must be https and its hostname must equal or end with ".<domain>" for one of: fcm.googleapis.com, push.services.mozilla.com, push.apple.com, notify.windows.com. Reject others with 400 and a specific message (prevents SSRF). Validate time with /^([01]\d|2[0-3]):[0-5]\d$/ and timeZone by constructing an Intl.DateTimeFormat in try/catch. Limit the request body to 4 KB.
+   - Key = "sub:" + SHA-256 hex of the endpoint. Value = { subscription, time, timeZone, lastSentDate: null, createdAt }. Re-subscribing the same endpoint updates time and timeZone and keeps lastSentDate.
+2. POST /api/unsubscribe  body { endpoint } deletes the record.
+3. POST /api/test  body { endpoint } sends one push immediately to that stored subscription (for demo and testing). Allow one test per endpoint per minute (KV key with expirationTtl 60).
+4. GET /api/health returns { ok: true }.
+
+Scheduled handler (every 5 minutes):
+- List keys with prefix "sub:" (handle cursor pagination) and read each record.
+- For each record, compute the current local date (YYYY-MM-DD) and minutes since midnight in its timeZone using Intl.DateTimeFormat. A reminder is due when lastSentDate !== local today AND 0 <= (nowMinutes - chosenMinutes) < 10. Then send a push and set lastSentDate to local today (one KV write).
+- On push service responses 404 or 410, delete the record. On 429 or 5xx, leave it so it retries on the next run inside the window. One failed subscription must never stop the others (Promise.allSettled), with at most 6 concurrent sends and at most 40 sends per run.
+- Cache the signed VAPID JWT per push-service origin (the audience) within a single run, so each origin is signed once (CPU limit).
+
+VAPID and push request:
+- Build an ES256 JWT (header {typ:"JWT",alg:"ES256"}, claims {aud: origin of the endpoint, exp: now + 12h, sub: VAPID_SUBJECT}) and sign it with ECDSA P-256 SHA-256 via crypto.subtle. Import the private key as a JWK built from d plus x and y derived from the uncompressed public key. WebCrypto returns the raw r||s signature; base64url-encode it.
+- POST to subscription.endpoint with headers Authorization: "vapid t=<jwt>, k=<VAPID_PUBLIC_KEY>", TTL: "3600", Urgency: "normal", and an empty body.
+
+Also provide:
+- /worker/README.md: how to generate VAPID keys (`npx web-push generate-vapid-keys`), create the KV namespace, set the secret, deploy, and test the cron locally with `wrangler dev --test-scheduled`.
+- A short comment at the top of src/index.ts explaining the CPU-time and KV-write design decisions.
+
+When done, list every file you created and give me the exact deploy commands.
+```
+
+### Result
+_(Fill in after deploying and testing.)_
+
+---
