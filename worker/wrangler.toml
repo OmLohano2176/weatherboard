@@ -17,7 +17,7 @@ crons = ["*/5 * * * *"]
 [vars]
 VAPID_PUBLIC_KEY = "BPjhEdMfo0zaIqqQpP6fgA2es1WkLp0_oPIBgnx8sStCAU5F70Os6M3v7mazJCCZbIAHg-B0EXHXWnSY0yenwXM"
 VAPID_SUBJECT = "mailto:rockingboy263@gmail.com"
-ALLOWED_ORIGINS = "http://localhost:4173,http://localhost:5173,https://weatherboard.app"
+ALLOWED_ORIGINS = "http://localhost:4173,http://localhost:5173,https://weatherboard.app,https://weatherboard-wine.vercel.app"
 
 # Note: VAPID_PRIVATE_KEY is a sensitive secret and must NEVER be stored here.
 # Configure it via: wrangler secret put VAPID_PRIVATE_KEY
