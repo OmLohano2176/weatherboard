@@ -259,3 +259,39 @@ Fix:
 _(Fill in after testing.)_
 
 ---
+
+## Prompt 9: Visual redesign (design system and layout)
+**Model:** Gemini 3.8 Flash (Medium)
+
+```
+Redesign the visual layer of WeatherBoard into a polished, premium dashboard. This is a visual and layout refactor only. Do NOT change data fetching, hooks, services, caching, push or any business logic, and do not remove any existing aria attributes, labels, validation, or error / empty / loading / offline states. Every existing feature must keep working.
+
+Direction: calm, confident, dark-first dashboard (the feel of Mercury / Linear / Vercel: restraint and good information density) with weather-app hero patterns. Do not copy any specific existing design.
+
+1. Design tokens in src/index.css (CSS variables only):
+   - Surfaces: three elevation levels (bg, surface, surface-raised) with 1px borders (white at 6-10% alpha) and layered soft shadows.
+   - Text: primary, secondary, muted. All text must meet WCAG AA (4.5:1) against the surface it sits on.
+   - Accent: one primary accent plus per-condition accents: --accent-clear (warm amber), --accent-clouds (slate blue), --accent-rain (blue), --accent-drizzle (teal blue), --accent-thunderstorm (violet), --accent-snow (ice), --accent-mist (grey teal).
+   - Spacing scale (4px base), radius scale (8/12/16/24), fluid type scale using clamp() (display, h1, h2, body, small, label).
+   - Typography: self-host one variable font (Inter or Plus Jakarta Sans) via @fontsource-variable, imported in main.tsx so the service worker precaches it for offline use. This is the ONLY dependency you may add. No Google Fonts CDN. Use font-variant-numeric: tabular-nums for all temperatures.
+2. Condition-reactive theme: set data-condition="clear|clouds|rain|drizzle|thunderstorm|snow|mist" on the app root from the current weather condition (no attribute or "neutral" when no city is selected). Use it to tint the page background with a soft radial gradient over the base background and to color the hero card glow. Transition over 600ms.
+3. Layout:
+   - Header: logo and app name on the left; on the right keep the PWA badge and add a small online/offline status dot with an accessible label.
+   - 1280px: two-column CSS grid, max-width 1200px. Left (about 2/3): search, hero current-weather card, 5-day forecast. Right (about 1/3, position: sticky): Favourites panel and Reminder card.
+   - 768px: single column; favourites as a horizontally scrollable chip row under the search; forecast as 5 columns.
+   - 375px: single column; forecast as a horizontally scrollable snap row (scroll-snap-type: x mandatory) inside its own overflow container. NO page-level horizontal scroll at any width.
+4. Hero card (CurrentWeather): city and country; "Last updated" and the Cached badge as small pills; a very large temperature (display size); the condition icon at 96-120px; the condition description; the favourite star button at the top right. Below, a 2-up grid of detail tiles (Humidity, Wind), each with a small icon, a label and a value. The attribution footer stays but small and muted.
+5. Forecast cards: weekday (Today highlighted), icon, high and low, plus a thin horizontal range bar scaled to the week's overall min and max so days can be compared at a glance. Hover raise on pointer devices only ((hover: hover) media query).
+6. Search: taller input (min-height 52px), leading search icon, a visible accent focus ring, the dropdown as a raised surface with clear hover/active states. Keep all combobox behaviour and aria attributes untouched.
+7. Restyle the favourites chips, the reminder card and both dialogs with the same tokens. Dialog backdrops get a subtle blur and the same radius scale.
+8. Empty state (no city selected yet): replace the plain welcome text with a friendly composition using the existing inline SVG weather icons, a one-line heading and short helper text pointing at the search box.
+9. Accessibility: touch targets at least 44x44px, a visible :focus-visible ring on every interactive element, colour never the only signal, and honour prefers-contrast and prefers-reduced-transparency (remove translucency and blur).
+10. No CSS framework. Keep each component's CSS beside the component. Do not add any dependency except the font package.
+
+Show me which files you changed, and flag any place where you had to touch logic (there should be none beyond passing a data-condition value).
+```
+
+### Result
+_(Fill in after testing.)_
+
+---

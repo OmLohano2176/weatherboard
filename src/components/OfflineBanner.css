@@ -1,7 +1,7 @@
 .offline-banner {
   width: 100%;
-  background-color: #78350f;
-  border-bottom: 1px solid #92400e;
+  background-color: rgba(120, 53, 15, 0.95);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.35);
   color: #fef3c7;
   padding: var(--spacing-2) var(--spacing-4);
   box-sizing: border-box;
@@ -10,6 +10,7 @@
   align-items: center;
   position: relative;
   z-index: 60;
+  backdrop-filter: blur(8px);
   animation: banner-slide-down 0.2s ease-out;
 }
 
@@ -37,17 +38,19 @@
 .offline-banner-icon {
   flex-shrink: 0;
   color: #fde68a;
+  display: inline-flex;
+  align-items: center;
 }
 
 .offline-banner-text {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  line-height: var(--line-height-normal);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  line-height: var(--line-normal);
   word-break: break-word;
 }
 
 @media (min-width: 640px) {
   .offline-banner-text {
-    font-size: var(--font-size-sm);
+    font-size: var(--text-sm);
   }
 }

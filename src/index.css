@@ -1,54 +1,177 @@
 :root {
-  /* Color system */
-  --color-bg-primary: #0f172a;
-  --color-bg-surface: #1e293b;
-  --color-bg-surface-hover: #334155;
-  --color-border: #334155;
-  --color-border-light: #475569;
+  /* Surfaces - 3 elevation levels */
+  --surface-bg: #080c14;
+  --surface: #0f172a;
+  --surface-raised: #182234;
+
+  --color-bg-primary: var(--surface-bg);
+  --color-bg-surface: var(--surface);
+  --color-bg-surface-hover: var(--surface-raised);
+
+  /* 1px borders (white at 6-10% alpha) */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.15);
+  --border-strong: rgba(255, 255, 255, 0.24);
+  --color-border: var(--border-subtle);
+  --color-border-light: var(--border-hover);
+
+  /* Soft layered shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.45), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.65), 0 6px 12px -2px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 50px -10px var(--condition-hero-glow, rgba(56, 189, 248, 0.12));
+
+  /* Text (WCAG AA compliant against surfaces) */
   --color-text-primary: #f8fafc;
   --color-text-secondary: #94a3b8;
   --color-text-muted: #64748b;
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--color-text-muted);
+
+  /* Accents */
   --color-primary: #38bdf8;
   --color-primary-hover: #0ea5e9;
-  --color-accent: #f59e0b;
-  --color-error: #ef4444;
-  --color-error-bg: rgba(239, 68, 68, 0.12);
+  --color-primary-glow: rgba(56, 189, 248, 0.25);
 
-  /* Typography */
-  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
+  /* Per-condition accents */
+  --accent-clear: #f59e0b;       /* warm amber */
+  --accent-clouds: #818cf8;      /* slate blue */
+  --accent-rain: #38bdf8;        /* blue */
+  --accent-drizzle: #2dd4bf;     /* teal blue */
+  --accent-thunderstorm: #c084fc;/* violet */
+  --accent-snow: #bae6fd;        /* ice */
+  --accent-mist: #94d2bd;        /* grey teal */
+
+  --color-accent: var(--accent-clear);
+  --color-error: #ef4444;
+  --color-error-bg: rgba(239, 68, 68, 0.14);
+
+  /* Spacing scale (4px base) */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+
+  /* Legacy spacing aliases */
+  --spacing-1: var(--space-1);
+  --spacing-2: var(--space-2);
+  --spacing-3: var(--space-3);
+  --spacing-4: var(--space-4);
+  --spacing-5: var(--space-5);
+  --spacing-6: var(--space-6);
+  --spacing-8: var(--space-8);
+  --spacing-10: var(--space-10);
+  --spacing-12: var(--space-12);
+
+  /* Radius scale (8/12/16/24) */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Fluid typography scale using clamp() */
+  --text-display: clamp(3.5rem, 8vw, 5.5rem);
+  --text-h1: clamp(1.75rem, 3.5vw, 2.25rem);
+  --text-h2: clamp(1.25rem, 2.5vw, 1.5rem);
+  --text-body: clamp(0.9375rem, 1.5vw, 1rem);
+  --text-small: 0.875rem;
+  --text-label: 0.75rem;
+
+  --text-xs: var(--text-label);
+  --text-sm: var(--text-small);
+  --text-base: var(--text-body);
+  --text-lg: 1.125rem;
+  --text-xl: var(--text-h2);
+  --text-2xl: var(--text-h1);
+
+  --line-tight: 1.2;
+  --line-normal: 1.5;
+
+  /* Legacy font size aliases */
+  --font-size-xs: var(--text-label);
+  --font-size-sm: var(--text-small);
+  --font-size-base: var(--text-body);
   --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.875rem;
+  --font-size-xl: var(--text-h2);
+  --font-size-2xl: var(--text-h1);
+  --font-size-3xl: 2.5rem;
+
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  --line-height-tight: 1.25;
+
+  --line-height-tight: 1.2;
   --line-height-normal: 1.5;
 
-  /* Spacing */
-  --spacing-1: 0.25rem;
-  --spacing-2: 0.5rem;
-  --spacing-3: 0.75rem;
-  --spacing-4: 1rem;
-  --spacing-5: 1.25rem;
-  --spacing-6: 1.5rem;
-  --spacing-8: 2rem;
-  --spacing-10: 2.5rem;
-  --spacing-12: 3rem;
+  /* Self-hosted Variable Font */
+  --font-family-base: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 
-  /* Layout and Radii */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-full: 9999px;
-  --max-width-container: 1200px;
-  --header-height: 4rem;
+  /* Layout */
+  --max-width-container: 1280px;
+  --header-height: 4.25rem;
+
+  /* Default reactive glow tokens (neutral) */
+  --condition-accent: var(--color-primary);
+  --condition-glow: rgba(56, 189, 248, 0.05);
+  --condition-hero-glow: rgba(56, 189, 248, 0.08);
+}
+
+/* Condition-Reactive Theme Variations */
+[data-condition='clear'] {
+  --condition-accent: var(--accent-clear);
+  --condition-glow: rgba(245, 158, 11, 0.12);
+  --condition-hero-glow: rgba(245, 158, 11, 0.16);
+}
+
+[data-condition='clouds'] {
+  --condition-accent: var(--accent-clouds);
+  --condition-glow: rgba(129, 140, 248, 0.1);
+  --condition-hero-glow: rgba(129, 140, 248, 0.14);
+}
+
+[data-condition='rain'] {
+  --condition-accent: var(--accent-rain);
+  --condition-glow: rgba(56, 189, 248, 0.12);
+  --condition-hero-glow: rgba(56, 189, 248, 0.16);
+}
+
+[data-condition='drizzle'] {
+  --condition-accent: var(--accent-drizzle);
+  --condition-glow: rgba(45, 212, 191, 0.11);
+  --condition-hero-glow: rgba(45, 212, 191, 0.15);
+}
+
+[data-condition='thunderstorm'] {
+  --condition-accent: var(--accent-thunderstorm);
+  --condition-glow: rgba(192, 132, 252, 0.13);
+  --condition-hero-glow: rgba(192, 132, 252, 0.18);
+}
+
+[data-condition='snow'] {
+  --condition-accent: var(--accent-snow);
+  --condition-glow: rgba(186, 230, 253, 0.11);
+  --condition-hero-glow: rgba(186, 230, 253, 0.15);
+}
+
+[data-condition='mist'] {
+  --condition-accent: var(--accent-mist);
+  --condition-glow: rgba(148, 210, 189, 0.11);
+  --condition-hero-glow: rgba(148, 210, 189, 0.15);
+}
+
+[data-condition='neutral'] {
+  --condition-accent: var(--color-primary);
+  --condition-glow: rgba(56, 189, 248, 0.04);
+  --condition-hero-glow: rgba(56, 189, 248, 0.08);
 }
 
 *,
@@ -61,12 +184,13 @@
 
 html {
   font-size: 16px;
-  background-color: var(--color-bg-primary);
+  background-color: var(--surface-bg);
+  color-scheme: dark;
 }
 
 body {
   font-family: var(--font-family-base);
-  background-color: var(--color-bg-primary);
+  background-color: var(--surface-bg);
   color: var(--color-text-primary);
   line-height: var(--line-height-normal);
   min-height: 100vh;
@@ -74,8 +198,60 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Tabular numbers for all temperatures and numeric stats */
+.tabular-nums,
+[data-temp] {
+  font-variant-numeric: tabular-nums;
+}
+
 #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* Global focus-visible styling (Accessibility) */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Prefers Reduced Motion Media Query */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Prefers Contrast Media Query */
+@media (prefers-contrast: more) {
+  :root {
+    --border-subtle: rgba(255, 255, 255, 0.28);
+    --border-hover: rgba(255, 255, 255, 0.45);
+    --border-strong: rgba(255, 255, 255, 0.7);
+    --color-text-secondary: #cbd5e1;
+    --color-text-muted: #94a3b8;
+  }
+}
+
+/* Prefers Reduced Transparency Media Query */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --surface-bg: #05080f;
+    --surface: #0c1220;
+    --surface-raised: #141c2c;
+    --border-subtle: #243045;
+    --border-hover: #334460;
+  }
+
+  .reminder-dialog,
+  .favorites-confirm-dialog {
+    backdrop-filter: none !important;
+    background-color: #0c1220 !important;
+  }
 }

@@ -47,6 +47,25 @@ export const CitySearch: React.FC<CitySearchProps> = ({ onSelect, isOnline = tru
     };
   }, []);
 
+  // Global '/' keyboard shortcut to focus search input
+  useEffect(() => {
+    const handleGlobalSlash = (e: KeyboardEvent) => {
+      if (e.key === '/' && document.activeElement !== inputRef.current) {
+        const target = e.target as HTMLElement | null;
+        const tagName = target?.tagName;
+        if (tagName !== 'INPUT' && tagName !== 'TEXTAREA' && !target?.isContentEditable) {
+          e.preventDefault();
+          inputRef.current?.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleGlobalSlash);
+    return () => {
+      document.removeEventListener('keydown', handleGlobalSlash);
+    };
+  }, []);
+
   // Automatically open dropdown when status changes to loading, success, empty, or error
   useEffect(() => {
     if (trimmedQuery.length >= 2 && status !== 'idle') {
@@ -328,6 +347,12 @@ export const CitySearch: React.FC<CitySearchProps> = ({ onSelect, isOnline = tru
             autoCapitalize="words"
             spellCheck="false"
           />
+
+          {isOnline && !query && (
+            <kbd className="city-search-shortcut-hint" aria-hidden="true" title="Press / to search">
+              /
+            </kbd>
+          )}
 
           {isOnline && query && (
             <button

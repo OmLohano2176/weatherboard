@@ -12,14 +12,14 @@ export default defineConfig({
       filename: 'sw.ts',
       registerType: 'autoUpdate',
       injectManifest: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}']
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}']
       },
       manifest: {
         name: 'WeatherBoard',
         short_name: 'WeatherBoard',
         description: 'WeatherBoard dashboard application',
-        theme_color: '#0f172a',
-        background_color: '#0f172a',
+        theme_color: '#080c14',
+        background_color: '#080c14',
         display: 'standalone',
         start_url: '/',
         scope: '/',

@@ -1,13 +1,18 @@
+/* ==========================================================================
+   Daily Weather Reminder Settings Component Styles
+   ========================================================================== */
+
 .reminder-card {
   width: 100%;
-  background-color: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-6);
+  background-color: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-5);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: var(--spacing-3);
+  box-shadow: var(--shadow-sm);
   margin-top: var(--spacing-4);
 }
 
@@ -25,31 +30,34 @@
 }
 
 .reminder-icon {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   color: var(--color-primary);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  font-size: var(--text-base);
 }
 
 .reminder-title {
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   margin: 0;
 }
 
 .reminder-body {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  line-height: var(--line-height-normal);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--line-normal);
   margin: 0;
 }
 
 .reminder-offline-helper {
-  font-size: var(--font-size-xs);
-  color: var(--color-accent);
+  font-size: var(--text-xs);
+  color: var(--accent-clear);
   background-color: rgba(245, 158, 11, 0.1);
   border: 1px solid rgba(245, 158, 11, 0.25);
   border-radius: var(--radius-sm);
@@ -60,62 +68,70 @@
 .reminder-actions {
   display: flex;
   align-items: center;
-  gap: var(--spacing-3);
+  gap: var(--spacing-2);
   flex-wrap: wrap;
+  padding-top: var(--spacing-1);
 }
 
 .reminder-btn {
-  min-height: 44px;
-  min-width: 44px;
+  min-height: 40px;
   padding: var(--spacing-2) var(--spacing-4);
-  font-family: var(--font-family-base);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
   border-radius: var(--radius-md);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--spacing-2);
-  transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
   box-sizing: border-box;
   text-decoration: none;
 }
 
 .reminder-btn:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .reminder-btn-primary {
   background-color: var(--color-primary);
-  color: var(--color-bg-primary);
+  color: #080c14;
+  font-weight: 600;
   border: 1px solid var(--color-primary);
 }
 
 .reminder-btn-primary:hover:not(:disabled) {
   background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
 }
 
 .reminder-btn-secondary {
-  background-color: var(--color-bg-surface-hover);
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
 }
 
 .reminder-btn-secondary:hover:not(:disabled) {
-  background-color: var(--color-border);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .reminder-btn-danger {
-  background-color: transparent;
-  color: var(--color-error);
-  border: 1px solid var(--color-border);
+  background-color: rgba(239, 68, 68, 0.08);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .reminder-btn-danger:hover:not(:disabled) {
-  background-color: var(--color-error-bg);
-  border-color: var(--color-error);
+  background-color: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.reminder-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .reminder-error-row {
@@ -123,46 +139,48 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-3);
-  background-color: var(--color-error-bg);
-  border: 1px solid var(--color-error);
+  background-color: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: var(--radius-md);
   padding: var(--spacing-2) var(--spacing-3);
 }
 
 .reminder-error-text {
-  font-size: var(--font-size-xs);
-  color: var(--color-error);
+  font-size: var(--text-xs);
+  color: #f87171;
   margin: 0;
-  line-height: var(--line-height-normal);
+  line-height: var(--line-normal);
 }
 
 .reminder-notice-box {
-  background-color: rgba(30, 41, 59, 0.4);
-  border: 1px solid var(--color-border);
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: var(--spacing-3) var(--spacing-4);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  line-height: var(--line-height-normal);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--line-normal);
 }
 
-/* Modal Dialog */
+/* ==========================================================================
+   Explainer Modal Dialog with Backdrop Blur
+   ========================================================================== */
 .reminder-dialog {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background-color: var(--color-bg-surface);
-  color: var(--color-text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  background-color: var(--surface-raised);
+  color: var(--text-primary);
   padding: var(--spacing-6);
   max-width: 440px;
   width: 90%;
   margin: auto;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-lg);
   box-sizing: border-box;
 }
 
 .reminder-dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(8px);
 }
 
 .reminder-dialog-content {
@@ -172,71 +190,79 @@
 }
 
 .reminder-dialog-title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .reminder-dialog-intro {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  line-height: var(--line-height-normal);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--line-normal);
   margin: 0;
 }
 
 .reminder-dialog-points {
   margin: 0;
   padding-left: var(--spacing-4);
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-1);
+  gap: var(--spacing-2);
+}
+
+.reminder-dialog-points li {
+  line-height: 1.4;
 }
 
 .reminder-form-group {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
 }
 
 .reminder-time-label {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-primary);
 }
 
 .reminder-time-input {
   min-height: 44px;
   padding: var(--spacing-2) var(--spacing-3);
-  font-family: var(--font-family-base);
-  font-size: var(--font-size-base);
-  color: var(--color-text-primary);
-  background-color: var(--color-bg-primary);
-  border: 1px solid var(--color-border);
+  font-family: inherit;
+  font-size: var(--text-base);
+  color-scheme: dark;
+  color: var(--text-primary);
+  background-color: var(--surface);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   box-sizing: border-box;
   outline: none;
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .reminder-time-input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+  box-shadow: 0 0 0 2px var(--color-primary-glow);
 }
 
 .reminder-time-input.has-error {
-  border-color: var(--color-error);
+  border-color: #ef4444;
 }
 
 .reminder-time-input.has-error:focus {
-  border-color: var(--color-error);
-  box-shadow: 0 0 0 2px var(--color-error-bg);
+  border-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
 }
 
 .reminder-time-error {
-  font-size: var(--font-size-xs);
-  color: var(--color-error);
+  font-size: var(--text-xs);
+  color: #f87171;
   margin: 0;
 }
 

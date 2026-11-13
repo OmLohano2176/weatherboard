@@ -9,6 +9,7 @@ import { FavoritesPanel } from './components/FavoritesPanel';
 import { FavoriteButton } from './components/FavoriteButton';
 import { OfflineBanner } from './components/OfflineBanner';
 import { ReminderSettings } from './components/ReminderSettings';
+import { WeatherIcon } from './components/WeatherIcon';
 import { useWeather } from './hooks/useWeather';
 import { useFavorites } from './hooks/useFavorites';
 import { useOnlineStatus } from './hooks/useOnlineStatus';
@@ -50,8 +51,10 @@ export function App() {
     retry: retryWeather,
   } = useWeather(selectedCity, isOnline);
 
+  const activeCondition = weatherData?.current?.condition || 'neutral';
+
   return (
-    <div className="app-shell">
+    <div className="app-shell" data-condition={activeCondition}>
       <OfflineBanner
         isOnline={isOnline}
         cachedCity={lastView?.city}
@@ -66,14 +69,85 @@ export function App() {
             </div>
             <h1 className="brand-name">WeatherBoard</h1>
           </div>
-          <span className="brand-tag">PWA</span>
+
+          <div className="header-status-group">
+            <span className="brand-tag">PWA</span>
+            <div
+              className={`status-pill ${isOnline ? 'is-online' : 'is-offline'}`}
+              role="status"
+              aria-label={isOnline ? 'Network status: Online' : 'Network status: Offline'}
+              title={isOnline ? 'Online' : 'Offline'}
+            >
+              <span className="status-dot" aria-hidden="true" />
+              <span>{isOnline ? 'Online' : 'Offline'}</span>
+            </div>
+          </div>
         </div>
       </header>
 
       <main className="app-main">
-        <div className="weather-app-content">
-          <div className="search-section">
-            <CitySearch onSelect={setSelectedCity} isOnline={isOnline} />
+        <div className="dashboard-grid">
+          {/* Primary Column (Search + Weather / Forecast / Empty State) */}
+          <div className="dashboard-primary">
+            <div className="search-section">
+              <CitySearch onSelect={setSelectedCity} isOnline={isOnline} />
+            </div>
+
+            <div className="weather-section" aria-live="polite">
+              {!selectedCity && (
+                <section className="empty-hero-card" aria-label="Welcome to WeatherBoard">
+                  <div className="empty-icons-cluster" aria-hidden="true">
+                    <div className="empty-icon-bubble">
+                      <WeatherIcon condition="rain" size={24} />
+                    </div>
+                    <div className="empty-icon-bubble primary">
+                      <WeatherIcon condition="clear" size={34} />
+                    </div>
+                    <div className="empty-icon-bubble">
+                      <WeatherIcon condition="clouds" size={24} />
+                    </div>
+                  </div>
+                  <h2 className="empty-hero-heading">Explore live weather worldwide</h2>
+                  <p className="empty-hero-text">
+                    Search for a city above or tap a saved favourite to view live conditions and 5-day
+                    forecasts.
+                  </p>
+                </section>
+              )}
+
+              {selectedCity && weatherStatus === 'loading' && <WeatherSkeleton />}
+
+              {selectedCity && weatherStatus === 'error' && (
+                <WeatherErrorView error={weatherError} onRetry={retryWeather} />
+              )}
+
+              {selectedCity && weatherStatus === 'success' && weatherData && (
+                <div className="weather-display-container">
+                  <CurrentWeather
+                    current={weatherData.current}
+                    source={weatherData.source}
+                    cityName={selectedCity.name}
+                    country={selectedCity.country}
+                    isCached={isCached}
+                    lastUpdated={lastUpdated}
+                    favoriteAction={
+                      <FavoriteButton
+                        city={selectedCity}
+                        isFavorite={isFavorite(selectedCity)}
+                        onAdd={addFavorite}
+                        onRemove={removeFavorite}
+                        limitReached={limitReached}
+                      />
+                    }
+                  />
+                  <Forecast daily={weatherData.daily} />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Secondary Column (Sticky Favourites Panel + Daily Reminder Settings) */}
+          <div className="dashboard-secondary">
             <FavoritesPanel
               favorites={favorites}
               selectedCity={selectedCity}
@@ -81,49 +155,6 @@ export function App() {
               onRemoveFavorite={removeFavorite}
               storageAvailable={storageAvailable}
             />
-          </div>
-
-          <div className="weather-section" aria-live="polite">
-            {!selectedCity && (
-              <section className="initial-hint-card">
-                <h2>Welcome to WeatherBoard</h2>
-                <p>
-                  Search for a city above or tap a favourite to see live weather and a 5-day
-                  forecast.
-                </p>
-              </section>
-            )}
-
-            {selectedCity && weatherStatus === 'loading' && <WeatherSkeleton />}
-
-            {selectedCity && weatherStatus === 'error' && (
-              <WeatherErrorView error={weatherError} onRetry={retryWeather} />
-            )}
-
-            {selectedCity && weatherStatus === 'success' && weatherData && (
-              <div className="weather-display-container">
-                <CurrentWeather
-                  current={weatherData.current}
-                  source={weatherData.source}
-                  cityName={selectedCity.name}
-                  country={selectedCity.country}
-                  isCached={isCached}
-                  lastUpdated={lastUpdated}
-                  favoriteAction={
-                    <FavoriteButton
-                      city={selectedCity}
-                      isFavorite={isFavorite(selectedCity)}
-                      onAdd={addFavorite}
-                      onRemove={removeFavorite}
-                      limitReached={limitReached}
-                    />
-                  }
-                />
-                <Forecast daily={weatherData.daily} />
-              </div>
-            )}
-
-            {/* Daily Weather Reminder Settings */}
             <ReminderSettings isOnline={isOnline} />
           </div>
         </div>
