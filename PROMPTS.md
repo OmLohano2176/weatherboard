@@ -349,3 +349,21 @@ Fix: perform the removal reliably. If the user prefers reduced motion (matchMedi
 _(Fill in after testing.)_
 
 ---
+
+## Prompt 12: Feedback for single-character search
+**Model:** Gemini 3.8 Flash (Medium)
+
+```
+Small UX fix in CitySearch.tsx and CitySearch.css (and useCitySearch.ts only if truly needed). Do not change the search logic, debounce, API calls or any other behavior.
+
+Currently, searching starts at 2+ trimmed characters. With exactly 1 character the dropdown shows nothing, so the user gets no feedback.
+
+Fix: when the trimmed query has exactly 1 character and the input is focused, open the dropdown with a single non-interactive hint row: "Keep typing. Search starts at 2 characters." It uses muted text, has role="status" with aria-live="polite", is NOT an option, cannot be selected with the arrow keys, and does not affect aria-activedescendant. Hide it when the query is empty or has 2+ characters. Make no network request for 1 character. The existing blur validation for an EMPTY field is unchanged, and a 1-character field must NOT show the "Enter a city name to search." error. Use the existing design tokens and keep the animation of the dropdown.
+
+Show me the diff.
+```
+
+### Result
+_(Fill in after testing.)_
+
+---

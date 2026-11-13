@@ -30,7 +30,9 @@ export const CitySearch: React.FC<CitySearchProps> = ({ onSelect, isOnline = tru
 
   const trimmedQuery = query.trim();
   const shouldShowDropdown =
-    isOnline && isOpen && trimmedQuery.length >= 2 && status !== 'idle';
+    isOnline &&
+    isOpen &&
+    (trimmedQuery.length === 1 || (trimmedQuery.length >= 2 && status !== 'idle'));
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -141,7 +143,7 @@ export const CitySearch: React.FC<CitySearchProps> = ({ onSelect, isOnline = tru
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       if (!isOpen) {
-        if (trimmedQuery.length >= 2) {
+        if (trimmedQuery.length >= 1) {
           setIsOpen(true);
         }
         return;
@@ -152,7 +154,7 @@ export const CitySearch: React.FC<CitySearchProps> = ({ onSelect, isOnline = tru
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       if (!isOpen) {
-        if (trimmedQuery.length >= 2) {
+        if (trimmedQuery.length >= 1) {
           setIsOpen(true);
         }
         return;
@@ -188,6 +190,14 @@ export const CitySearch: React.FC<CitySearchProps> = ({ onSelect, isOnline = tru
   };
 
   const renderDropdownContent = () => {
+    if (trimmedQuery.length === 1) {
+      return (
+        <div className="city-search-hint-row" role="status" aria-live="polite">
+          Keep typing. Search starts at 2 characters.
+        </div>
+      );
+    }
+
     if (status === 'loading') {
       return (
         <div className="city-search-status-item loading-item" role="status" aria-live="polite">
@@ -333,7 +343,7 @@ export const CitySearch: React.FC<CitySearchProps> = ({ onSelect, isOnline = tru
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
             onFocus={() => {
-              if (isOnline && trimmedQuery.length >= 2) {
+              if (isOnline && trimmedQuery.length >= 1) {
                 setIsOpen(true);
               }
             }}

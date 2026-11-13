@@ -184,6 +184,16 @@
   }
 }
 
+/* Non-interactive hint row for 1-character query */
+.city-search-hint-row {
+  padding: var(--spacing-4);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  line-height: var(--line-normal);
+  user-select: none;
+  cursor: default;
+}
+
 /* High-contrast active item state with an accent indicator */
 .city-search-option {
   display: flex;
